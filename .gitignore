@@ -1,0 +1,18 @@
+# Rust build artifacts
+/target/
+
+# Environment files
+.env
+.env.*
+
+# IDE/editor folders
+.vscode/
+.idea/
+.marscode/
+
+# macOS
+.DS_Store
+
+# Swap files
+*~
+*.swp

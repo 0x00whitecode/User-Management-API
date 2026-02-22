@@ -20,141 +20,135 @@ The application provides a RESTful API for managing users, including authenticat
 * Full CRUD operations for users
 * Authentication using JWT or session-based mechanism
 * Secure password hashing
-* Database integration
-* Input validation for all requests
-* Pagination for list endpoints
-* Environment variable management for secrets
-* API documentation using OpenAPI/Swagger
-* Deployed application
+ 
+# User Management API
 
----
+This repository contains a Rust-based User Management API implementing typical user lifecycle features: registration, email verification, password resets, authentication, roles & permissions, file uploads, audit logging, and more.
 
-## Tech Stack
+## Contents
 
-* **Language:** Rust
-* **Web Framework:** Actix-web
-* **Database:** PostgreSQL / MySQL / SQLite (via Diesel or SQLx)
-* **Authentication:** JWT or session-based authentication
-* **Password Hashing:** Argon2 or bcrypt
-* **API Documentation:** OpenAPI / Swagger
-* **Deployment:** Docker / Cloud provider (Render, Railway, AWS, etc.)
+- **Overview** — high-level description of the project
+- **Getting started** — prerequisites and local setup
+- **Database & migrations** — how to run migrations
+- **Running the app** — start the server
+- **API summary** — key endpoints and models
+- **Data model UML** — visual diagram of the schema
+- **Contributing** — how to help
 
----
+## Overview
 
-## Authentication & Security
+This API provides a foundation for user management in web applications: user accounts, profiles, email verification, password reset flows, session/refresh token handling, API keys for services, role/permission management, login history, audit logs, and file uploads for user assets.
 
-* User passwords are hashed before storage using a secure hashing algorithm
-* Authentication tokens are required for protected endpoints
-* Secrets such as database credentials and JWT keys are stored in environment variables
-* Input data is validated before processing
+The project is implemented in Rust and uses `sqlx` for database migrations and queries. The `migrations/` folder contains schema migrations (Postgres). See the `migrations/` directory for exact table definitions.
 
----
+## Tech stack
 
-## Core API Endpoints
+- Rust
+- sqlx (migrations & DB access)
+- PostgreSQL
 
-| Method | Endpoint      | Description               |
-| ------ | ------------- | ------------------------- |
-| POST   | `/users`      | Create a new user         |
-| POST   | `/auth/login` | Authenticate user (login) |
-| GET    | `/users`      | Fetch users (paginated)   |
-| PUT    | `/users/{id}` | Update user information   |
-| DELETE | `/users/{id}` | Delete a user             |
+## Getting started
 
----
+Prerequisites:
 
-## Request Validation
+- Rust toolchain (rustc, cargo)
+- PostgreSQL instance
+- `sqlx` CLI (for migrations)
 
-* All incoming requests are validated using structured request models
-* Invalid or missing fields return appropriate HTTP error responses
+Quick setup (example):
 
----
+```bash
+# set DB URL (example)
+export DATABASE_URL=postgres://user:pass@localhost:5432/user_management
 
-## Pagination
+# install sqlx-cli if needed
+cargo install sqlx-cli --no-default-features --features postgres
 
-The users list endpoint supports pagination using query parameters:
+# run DB migrations
+sqlx migrate run
 
-* `page` – page number
-* `limit` – number of records per page
-
-This ensures efficient data retrieval and scalability.
-
----
-
-## Standard Response Format
-
-All API responses follow a consistent format:
-
-```json
-{
-  "success": true,
-  "data": {},
-  "message": "Operation successful"
-}
+# run the server
+cargo run
 ```
 
----
+Adjust `DATABASE_URL` and other env vars as required by your environment or by `src/database_config.rs`.
 
-## API Documentation
+## Database & migrations
 
-* The API is documented using OpenAPI/Swagger
-* Documentation includes:
+All migrations live in the `migrations/` folder. To apply them locally:
 
-  * Endpoint descriptions
-  * Request and response schemas
-  * Authentication requirements
-* Swagger UI is available at:
-
-```
-/api-docs
+```bash
+sqlx migrate run
 ```
 
----
+Migration files include the schema for:
 
-## Environment Variables
+- users
+- email_verifications
+- password_resets
+- login_history
+- profile
+- roles, permissions, role_permission relations
+- file_uploads
+- intro_videos
+- api_keys
+- refresh_tokens
+- audit_logs
 
-Sensitive configuration values are managed using environment variables:
+## Running the app
 
-```env
-DATABASE_URL=
-JWT_SECRET=
-SERVER_PORT=
+Start the server with:
+
+```bash
+cargo run
 ```
 
----
+Server configuration (ports, DB connection, etc.) is read from environment variables (see `src/database_config.rs`).
 
-## Deployment
+## API summary (high level)
 
-* The application is deployed to a cloud environment
-* Environment variables are configured securely in production
-* The deployed API is accessible via a public URL
+The project exposes endpoints covering:
 
----
+- User registration and login
+- Email verification
+- Password reset request / perform
+- Profile retrieval and update
+- Role and permission administration
+- Uploading files (user avatars, assets)
+- Intro video metadata storage
+- API key issuance and management
+- Refresh token management for sessions
+- Audit logs recording important events
 
-## Evaluation Criteria
+See `src/models.rs` for data structures and the `migrations/` SQL files for exact table definitions.
 
-* Correct implementation of CRUD operations
-* Secure authentication and password handling
-* Proper database usage
-* Input validation and pagination
-* Availability of API documentation
+## Data model UML
 
----
+The following diagram shows the main entities and relationships. View the image below or open `umldaigram.png` directly.
 
-## Learning Outcomes
+![Data Model UML](umldaigram.png)
 
-Participants will gain practical experience with:
+If you want a PlantUML or alternative format, I can add that too.
 
-* Rust backend development using Actix-web
-* Database integration in Rust applications
-* Authentication and API security
-* Request validation and pagination
-* API documentation and deployment
+## Contributing
 
----
+Contributions are welcome. Typical workflows:
+
+1. Fork the repo
+2. Create a feature branch
+3. Add tests where applicable
+4. Submit a pull request explaining the change
+
+Please keep changes focused and add migration scripts for any schema changes.
 
 ## License
 
-This project is intended for educational and evaluation purposes.
+This project does not include a license file. If you want a license added, tell me which one and I will add it.
 
 ---
+
+Files updated/added in this change:
+
+- `README.md` — updated with detailed instructions and UML reference
+
 
